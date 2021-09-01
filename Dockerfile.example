@@ -1,0 +1,31 @@
+FROM nvidia/opengl:1.0-glvnd-runtime-ubuntu18.04 as glvnd_runtime
+
+FROM ros:melodic
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+COPY --from=glvnd_runtime /usr/lib/x86_64-linux-gnu /usr/lib/x86_64-linux-gnu
+ 
+COPY --from=glvnd_runtime \
+  /usr/share/glvnd/egl_vendor.d/10_nvidia.json \
+  /usr/share/glvnd/egl_vendor.d/10_nvidia.json
+
+RUN echo '/usr/lib/x86_64-linux-gnu' >> /etc/ld.so.conf.d/glvnd.conf && \
+    ldconfig
+
+ENV LD_LIBRARY_PATH /usr/lib/x86_64-linux-gnu:${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
+
+ENV NVIDIA_VISIBLE_DEVICES \
+    ${NVIDIA_VISIBLE_DEVICES:-all}
+ENV NVIDIA_DRIVER_CAPABILITIES \
+    ${NVIDIA_DRIVER_CAPABILITIES:+$NVIDIA_DRIVER_CAPABILITIES,}graphics
+
+COPY installers /tmp/installers
+COPY rcfiles /tmp/rcfiles
+COPY archive /tmp/archive
+
+RUN bash /tmp/installers/config_env.sh
+
+RUN bash /tmp/installers/install_3rdparties_example.sh
+
+RUN rm -rf /tmp/installers && rm -rf /tmp/rcfiles && rm -rf /tmp/archive
