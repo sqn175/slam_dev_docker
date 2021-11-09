@@ -23,22 +23,23 @@ Docker installed. [Install Docker Engine](https://docs.docker.com/engine/install
 
 1. You can customize the docker via modifying `installers/install_3rdparties_dev.sh` to install required third-party libraries.
 
-2. You can develop your SLAM algorithm using VS Code inside the containers, just modify the the attributes of `./devcontainer/devcontainer.json`  in VSCode:
+2. Some source mirrors such as apt and python mirrors are modified to China mirrors to improve download speed for China mainland users.
+
+3. You can manually pre-download third-party lib source code tarball files into archive dir for offline Docker building.
+
+4. You can develop your SLAM algorithm using VS Code inside the containers, just modify the the attributes of `./devcontainer/devcontainer.json`  in VSCode:
 
    ```json
    "build": {
-   		"dockerfile": "pathto/Dockerfile.ubuntu18-opengl",
+        "dockerfile": "pathto/Dockerfile.ubuntu18-opengl",
    },
    ```
 
    See more details in [Developing inside a Container](https://code.visualstudio.com/docs/remote/containers).
 
-3. **Welcome to contribute new installers needed for SLAM development and create new branches to host the State-of-the-Art SLAM algorithm development environments.**
+5. **Welcome to contribute new installers needed for SLAM development and create new branches to host the State-of-the-Art SLAM algorithm development environments.**
 
-## License
-
-
-
+## Acknowledgement
 Some part of source code are adapted from [Baidu Apollo](https://github.com/ApolloAuto/apollo), which is licensed under the [Apache-2.0 license](https://github.com/ApolloAuto/apollo/blob/master/LICENSE).
 
 
