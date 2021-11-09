@@ -102,6 +102,8 @@ function change_mirror_and_install_for_cn_user() {
   apt-get -y update &&
     apt-get install -y --no-install-recommends \
       build-essential \
+      cmake \
+      ninja-build \
       autoconf \
       automake \
       bc \
@@ -126,27 +128,21 @@ function change_mirror_and_install_for_cn_user() {
       wget \
       zip \
       xz-utils \
-      cmake \
       tmux \
       htop
 
   # Set python3 as default
-  # update-alternatives --install /usr/bin/python python /usr/bin/python3 36
+  update-alternatives --install /usr/bin/python python /usr/bin/python3 36
 
-  # # Set pypi mirror
-  # python3 -m pip install --default-timeout=100 --no-cache-dir -i https://mirrors.cloud.tencent.com/pypi/simple pip -U
-  # python3 -m pip config set global.index-url https://mirrors.cloud.tencent.com/pypi/simple
+  # Set pypi mirror
+  python3 -m pip install --default-timeout=100 --no-cache-dir -i https://mirrors.cloud.tencent.com/pypi/simple pip -U
+  python3 -m pip config set global.index-url https://mirrors.cloud.tencent.com/pypi/simple
 
   # Clean up cache to reduce layer size.
   apt-get clean &&
     rm -rf /var/lib/apt/lists/*
 
 }
-
-# function grant_device_permissions() {
-# #   [ -e /dev/ttyACM0 ] && chmod a+rw /dev/ttyACM0
-# #   [ -e /dev/imu ] && chmod a+rw /dev/imu
-# }
 
 ##===================== Main ==============================##
 function main() {
@@ -162,7 +158,6 @@ function main() {
     echo "Warning: user_name(${user_name}) != group_name(${group_name}) found."
   fi
   setup_user_account_if_not_exist "$@"
-  #   grant_device_permissions
   change_mirror_and_install_for_cn_user
 }
 

@@ -15,32 +15,41 @@
 # limitations under the License.
 ###############################################################################
 # Fail on first error.
+
+# This lib requires pre-installed Eigen3
+
 set -e
+
+PKG_NAME="pcl-pcl"
+echo -e "\033[32mInstalling ${PKG_NAME} ...\033[0m"
+
+if ldconfig -p | grep -q libpcl_common ; then
+    info "PCL was already installed. Skip."
+    exit 0
+fi
+
+VERSION="1.10.1"
+if [ $1 ]; then
+    VERSION="$1"
+fi
 
 WORKHORSE="$1"
 if [ -z "${WORKHORSE}" ]; then
     WORKHORSE="cpu"
 fi
 
-CURR_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
-. ${CURR_DIR}/installer_base.sh
-
-# Install system-provided pcl
-apt_get_update_and_install \
-  libpcl-dev
-exit 0
-
-if ldconfig -p | grep -q libpcl_common ; then
-    info "Found existing PCL installation. Skipp re-installation."
-    exit 0
-fi
-
+# 1) Install PCL via apt
+# apt-get -y update && \
+#     apt-get -y install --no-install-recommends \
+#     libpcl-dev
+# exit 0
+# 2) Or Build PCL from source
 GPU_OPTIONS="-DCUDA_ARCH_BIN=\"${SUPPORTED_NVIDIA_SMS}\""
 if [ "${WORKHORSE}" = "cpu" ]; then
     GPU_OPTIONS="-DWITH_CUDA=OFF"
 fi
 
-info "GPU Options for PCL:\"${GPU_OPTIONS}\""
+echo "GPU Options for PCL:\"${GPU_OPTIONS}\""
 
 TARGET_ARCH="$(uname -m)"
 ARCH_OPTIONS=""
@@ -53,8 +62,8 @@ fi
 # libpcap-dev
 # libopenmpi-dev
 # libboost-all-dev
-apt_get_update_and_install \
-    libeigen3-dev \
+apt-get -y update && \
+    apt-get -y install --no-install-recommends \
     libflann-dev \
     libglew-dev \
     libglfw3-dev \
@@ -69,25 +78,21 @@ apt_get_update_and_install \
 # libglfw3-dev depends on libglfw3,
 # and libglew-dev have a dependency over libglew2.0
 
-THREAD_NUM=$(nproc)
-
-# VERSION="1.11.0"
-# CHECKSUM="4255c3d3572e9774b5a1dccc235711b7a723197b79430ef539c2044e9ce65954" # 1.11.0
-
-VERSION="1.10.1"
-CHECKSUM="61ec734ec7c786c628491844b46f9624958c360012c173bbc993c5ff88b4900e" # 1.10.1
-PKG_NAME="pcl-${VERSION}.tar.gz"
-
-DOWNLOAD_LINK="https://github.com/PointCloudLibrary/pcl/archive/${PKG_NAME}"
-
-download_if_not_cached "${PKG_NAME}" "${CHECKSUM}" "${DOWNLOAD_LINK}"
-tar xzf ${PKG_NAME}
+PKG_FILE="${PKG_NAME}-${VERSION}.tar.gz"
+DOWNLOAD_LINK="https://github.com/PointCloudLibrary/pcl/archive/pcl-${VERSION}.tar.gz"
+if [[ -e "${ARCHIVE_DIR}/${PKG_FILE}" ]]; then
+    echo "Using downloaded source files."
+    mv -f "${ARCHIVE_DIR}/${PKG_FILE}" "${PKG_FILE}"
+else
+    wget "${DOWNLOAD_LINK}" -O "${PKG_FILE}"
+fi
+tar xzf ${PKG_FILE}
 
 # Ref: https://src.fedoraproject.org/rpms/pcl.git
 #  -DPCL_PKGCONFIG_SUFFIX:STRING="" \
 #  -DCMAKE_SKIP_RPATH=ON \
 
-pushd pcl-pcl-${VERSION}/
+pushd "${PKG_NAME}-${VERSION}"
     patch -p1 < ${CURR_DIR}/pcl-sse-fix-${VERSION}.patch
     mkdir build && cd build
     cmake .. \
@@ -104,14 +109,15 @@ pushd pcl-pcl-${VERSION}/
         -DBUILD_SHARED_LIBS=ON \
         -DCMAKE_INSTALL_PREFIX="${SYSROOT_DIR}" \
         -DCMAKE_BUILD_TYPE=Release
-    make -j${THREAD_NUM}
+
+    make -j$(nproc)
     make install
 popd
 
 ldconfig
 
 #clean up
-rm -fr ${PKG_NAME} pcl-pcl-${VERSION}
+rm -rf ${PKG_NAME} ${PKG_NAME}-${VERSION}
 
 # Clean up cache to reduce layer size.
 apt-get clean && \

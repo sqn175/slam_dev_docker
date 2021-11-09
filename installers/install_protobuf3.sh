@@ -2,21 +2,22 @@
 
 set -e
 
-CURR_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
-. ${CURR_DIR}/installer_base.sh
+VERSION="3.14.0"
+if [ $1 ]; then
+    VERSION="$1"
+fi
 
 PKG_NAME="protobuf"
-info "Installing ${PKG_NAME} ..."
+echo -e "\033[32mInstalling ${PKG_NAME} ...\033[0m"
 
-apt_get_update_and_install \
-        cmake \
-        ninja-build
-
-VERSION="3.14.0"
 PKG_FILE="${PKG_NAME}-${VERSION}.tar.gz"
-CHECKSUM="d0f5f605d0d656007ce6c8b5a82df3037e1d8fe8b121ed42e536f569dec16113"
 DOWNLOAD_LINK="https://github.com/protocolbuffers/protobuf/archive/v${VERSION}.tar.gz"
-download_if_not_cached "${PKG_FILE}" "${CHECKSUM}" "${DOWNLOAD_LINK}"
+if [[ -e "${ARCHIVE_DIR}/${PKG_FILE}" ]]; then
+    echo "Using downloaded source files."
+    mv -f "${ARCHIVE_DIR}/${PKG_FILE}" "${PKG_FILE}"
+else
+    wget "${DOWNLOAD_LINK}" -O "${PKG_FILE}"
+fi
 tar xzf ${PKG_FILE}
 
 pushd "${PKG_NAME}-${VERSION}"
@@ -26,13 +27,14 @@ pushd "${PKG_NAME}-${VERSION}"
       -DCMAKE_BUILD_TYPE=Release \
       -Dprotobuf_BUILD_TESTS=OFF \
       ../cmake
+
     ninja
     sudo ninja install
 popd
 
 ldconfig
 
-ok "Successfully installed ${PKG_NAME} ${VERSION}."
+echo -e "Successfully installed ${PKG_NAME} ${VERSION}."
 
 # Clean up files
 rm -rf ${PKG_FILE} ${PKG_NAME}-${VERSION}

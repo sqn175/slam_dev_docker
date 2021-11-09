@@ -3,8 +3,8 @@
 set -e
 
 # Default settings
-HOST_SOURCE_DIR="/home/qin/Documents/sources/demos/visual_lidar_slam_collection"
-IMAGE="slam_dev_badslam:latest"
+HOST_SOURCE_DIR="slam/source/dir"
+IMAGE_NAME="slam_dev"
 
 XSOCK=/tmp/.X11-unix
 XAUTH=$HOME/.Xauthority
@@ -26,6 +26,6 @@ docker run \
     --net host \
     --workdir /slam_dev_src \
     --add-host raw.githubusercontent.com:151.101.84.133 \
-    $IMAGE
+    "${IMAGE_NAME}:latest"
 
 xhost -local:root 1>/dev/null 2>&1

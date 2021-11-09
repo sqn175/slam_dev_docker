@@ -2,16 +2,24 @@
 
 set -e
 
-VERSION="master"
+VERSION="0.6"
 if [ $1 ]; then
     VERSION="$1"
 fi
 
-PKG_NAME="opengv"
+PKG_NAME="Pangolin"
 echo -e "\033[32mInstalling ${PKG_NAME} ...\033[0m"
 
+apt-get -y update && \
+    apt-get -y install --no-install-recommends \
+    libgl1-mesa-dev \
+    libglew-dev \
+    libwayland-dev \
+    libxkbcommon-dev \
+    wayland-protocols
+
 PKG_FILE="${PKG_NAME}-${VERSION}.tar.gz"
-DOWNLOAD_LINK="https://github.com/laurentkneip/opengv/archive/${VERSION}.tar.gz"
+DOWNLOAD_LINK="https://github.com/stevenlovegrove/Pangolin/archive/v${VERSION}.tar.gz"
 if [[ -e "${ARCHIVE_DIR}/${PKG_FILE}" ]]; then
     echo "Using downloaded source files."
     mv -f "${ARCHIVE_DIR}/${PKG_FILE}" "${PKG_FILE}"

@@ -1,22 +1,25 @@
 #!/usr/bin/env bash
 
+# This lib requires pre-installed OpenCV
+
 set -e
 
-CURR_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
-. ${CURR_DIR}/installer_base.sh
+VERSION="1.1-free"
+if [ $1 ]; then
+    VERSION="$1"
+fi
 
 PKG_NAME="DBoW2"
-info "Installing ${PKG_NAME} ..."
+echo -e "\033[32mInstalling ${PKG_NAME} ...\033[0m"
 
-apt_get_update_and_install \
-        cmake \
-        libopencv-dev 
-
-VERSION="1.1-free"
 PKG_FILE="${PKG_NAME}-${VERSION}.tar.gz"
-CHECKSUM="b5d68c4097a45ec2fabe10d7d0dc731c2ecd931ac3886d8f2ade2e942670143c"
 DOWNLOAD_LINK="https://github.com/dorian3d/DBoW2/archive/v${VERSION}.tar.gz"
-download_if_not_cached "${PKG_FILE}" "${CHECKSUM}" "${DOWNLOAD_LINK}"
+if [[ -e "${ARCHIVE_DIR}/${PKG_FILE}" ]]; then
+    echo "Using downloaded source files."
+    mv -f "${ARCHIVE_DIR}/${PKG_FILE}" "${PKG_FILE}"
+else
+    wget "${DOWNLOAD_LINK}" -O "${PKG_FILE}"
+fi
 tar xzf ${PKG_FILE}
 
 pushd "${PKG_NAME}-${VERSION}"
@@ -31,7 +34,7 @@ popd
 
 ldconfig
 
-ok "Successfully installed ${PKG_NAME} ${VERSION}."
+echo -e "Successfully installed ${PKG_NAME} ${VERSION}."
 
 # Clean up files
 rm -rf ${PKG_FILE} ${PKG_NAME}-${VERSION}

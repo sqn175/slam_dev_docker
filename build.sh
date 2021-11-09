@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
-
-DOCKERFILE="Dockerfile.badslam"
-
 set -e
+
+DOCKERFILE="Dockerfile.ubuntu18-opengl"
+IMAGE_NAME="slam_dev"
 
 docker build \
     --network=host \
-    --tag slam_dev_${DOCKERFILE##*.}:latest \
+    --tag ${IMAGE_NAME}:latest \
     --file ${DOCKERFILE} .
 
-echo "已构建新镜像"
+echo "Docker container built!"

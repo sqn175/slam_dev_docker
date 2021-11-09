@@ -1,22 +1,25 @@
 #!/usr/bin/env bash
 
+# This lib requires pre-installed Eigen3
+
 set -e
 
-CURR_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
-. ${CURR_DIR}/installer_base.sh
+VERSION="1.0.0"
+if [ $1 ]; then
+    VERSION="$1"
+fi
 
 PKG_NAME="Sophus"
-info "Installing ${PKG_NAME} ..."
+echo -e "\033[32mInstalling ${PKG_NAME} ...\033[0m"
 
-apt_get_update_and_install \
-        cmake \
-        libeigen3-dev
-
-VERSION="1.0.0"
 PKG_FILE="${PKG_NAME}-${VERSION}.tar.gz"
-CHECKSUM="b4c8808344fe429ec026eca7eb921cef27fe9ff8326a48b72c53c4bf0804ad53"
 DOWNLOAD_LINK="https://github.com/strasdat/Sophus/archive/v${VERSION}.tar.gz"
-download_if_not_cached "${PKG_FILE}" "${CHECKSUM}" "${DOWNLOAD_LINK}"
+if [[ -e "${ARCHIVE_DIR}/${PKG_FILE}" ]]; then
+    echo "Using downloaded source files."
+    mv -f "${ARCHIVE_DIR}/${PKG_FILE}" "${PKG_FILE}"
+else
+    wget "${DOWNLOAD_LINK}" -O "${PKG_FILE}"
+fi
 tar xzf ${PKG_FILE}
 
 pushd "${PKG_NAME}-${VERSION}"
@@ -28,7 +31,7 @@ popd
 
 ldconfig
 
-ok "Successfully installed ${PKG_NAME} ${VERSION}."
+echo -e "Successfully installed ${PKG_NAME} ${VERSION}."
 
 # Clean up files
 rm -rf ${PKG_FILE} ${PKG_NAME}-${VERSION}

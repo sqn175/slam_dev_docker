@@ -17,25 +17,21 @@
 ###############################################################################
 # Fail on first error.
 
+# This lib requires pre-installed Eigen3
+
 set -e
 
-CURR_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
-. ${CURR_DIR}/installer_base.sh
+PKG_NAME="opencv"
+echo -e "\033[32mInstalling ${PKG_NAME} ...\033[0m"
 
-# 1) Install OpenCV via apt
-apt_get_update_and_install \
-   libopencv-core-dev \
-   libopencv-imgproc-dev \
-   libopencv-imgcodecs-dev \
-   libopencv-highgui-dev \
-   libopencv-dev
-exit 0
-# 2) Build OpenCV from source
-# RTFM: https://src.fedoraproject.org/rpms/opencv/blob/master/f/opencv.spec
+# if ldconfig -p | grep -q libopencv_core ; then
+#     info "OpenCV was already installed. Skip."
+#     exit 0
+# fi
 
-if ldconfig -p | grep -q libopencv_core ; then
-    info "OpenCV was already installed"
-    exit 0
+VERSION="3.4.1"
+if [ $1 ]; then
+    VERSION="$1"
 fi
 
 WORKHORSE="$1"
@@ -43,39 +39,63 @@ if [ -z "${WORKHORSE}" ]; then
     WORKHORSE="cpu"
 fi
 
-BUILD_CONTRIB="no"
+INSTALL_CONTRIB="yes"
 
-apt_get_update_and_install \
-        libjpeg-dev \
-        libpng-dev \
-        libtiff-dev \
-        libv4l-dev \
-        libeigen3-dev \
-        libopenblas-dev \
-        libatlas-base-dev \
-        libxvidcore-dev \
-        libx264-dev \
-        libopenni-dev \
-        libwebp-dev
+# 1) Install OpenCV via apt
+# apt-get -y update && \
+#         apt-get -y install --no-install-recommends \
+#     libopencv-core-dev \
+#     libopencv-imgproc-dev \
+#     libopencv-imgcodecs-dev \
+#     libopencv-highgui-dev \
+#     libopencv-dev
 
-pip3_install numpy
+# if [ "${INSTALL_CONTRIB}" = "yes" ]; then
+#     apt-get -y update && \
+#         apt-get -y install --no-install-recommends \
+#         libopencv-contrib-dev
+# fi
+# exit 0
+# 2) Or Build OpenCV from source
+# RTFM: https://src.fedoraproject.org/rpms/opencv/blob/master/f/opencv.spec
 
-VERSION="3.4.5"
+apt-get -y update && \
+    apt-get -y install --no-install-recommends \
+    libjpeg-dev \
+    libpng-dev \
+    libtiff-dev \
+    libv4l-dev \
+    libopenblas-dev \
+    libatlas-base-dev \
+    libxvidcore-dev \
+    libx264-dev \
+    libopenni-dev \
+    libwebp-dev
 
-PKG_OCV="opencv-${VERSION}.tar.gz"
-CHECKSUM="0c57d9dd6d30cbffe68a09b03f4bebe773ee44dc8ff5cd6eaeb7f4d5ef3b428e"
+python3 -m pip install --default-timeout=100 --no-cache-dir numpy
+
+PKG_FILE="${PKG_NAME}-${VERSION}.tar.gz"
 DOWNLOAD_LINK="https://github.com/opencv/opencv/archive/${VERSION}.tar.gz"
-download_if_not_cached "${PKG_OCV}" "${CHECKSUM}" "${DOWNLOAD_LINK}"
-tar xzf ${PKG_OCV}
+if [[ -e "${ARCHIVE_DIR}/${PKG_FILE}" ]]; then
+    echo "Using downloaded source files."
+    mv -f "${ARCHIVE_DIR}/${PKG_FILE}" "${PKG_FILE}"
+else
+    wget "${DOWNLOAD_LINK}" -O "${PKG_FILE}"
+fi
+tar xzf ${PKG_FILE}
 
-if [ "${BUILD_CONTRIB}" = "yes" ]; then
+if [ "${INSTALL_CONTRIB}" = "yes" ]; then
     PKG_CONTRIB="opencv_contrib-${VERSION}.tar.gz"
     CHECKSUM="a69772f553b32427e09ffbfd0c8d5e5e47f7dab8b3ffc02851ffd7f912b76840"
     DOWNLOAD_LINK="https://github.com/opencv/opencv_contrib/archive/${VERSION}.tar.gz"
-    download_if_not_cached "${PKG_CONTRIB}" "${CHECKSUM}" "${DOWNLOAD_LINK}"
+    if [[ -e "${ARCHIVE_DIR}/${PKG_CONTRIB}" ]]; then
+        echo "Using downloaded source files."
+        mv -f "${ARCHIVE_DIR}/${PKG_CONTRIB}" "${PKG_CONTRIB}"
+    else
+        wget "${DOWNLOAD_LINK}" -O "${PKG_CONTRIB}"
+    fi
     tar xzf ${PKG_CONTRIB}
 fi
-
 
 # libgtk-3-dev libtbb2 libtbb-dev
 # -DWITH_GTK=ON -DWITH_TBB=ON
@@ -97,12 +117,12 @@ if [ "${TARGET_ARCH}" = "x86_64" ]; then
     EXTRA_OPTIONS="${EXTRA_OPTIONS} -DCPU_BASELINE=SSE4"
 fi
 
-if [ "${BUILD_CONTRIB}" = "yes" ]; then
+if [ "${INSTALL_CONTRIB}" = "yes" ]; then
     EXTRA_OPTIONS="${EXTRA_OPTIONS} -DOPENCV_EXTRA_MODULES_PATH=\"../../opencv_contrib-${VERSION}/modules\""
 fi
 
 # -DBUILD_LIST=core,highgui,improc
-pushd "opencv-${VERSION}"
+pushd "${PKG_NAME}-${VERSION}"
     mkdir build && cd build
         cmake .. \
             -DCMAKE_BUILD_TYPE=Release \
@@ -140,15 +160,19 @@ pushd "opencv-${VERSION}"
             ${EXTRA_OPTIONS}
 
         make -j$(nproc)
-        make install
+        # make install
 popd
 
 ldconfig
 
-ok "Successfully installed OpenCV ${VERSION}."
+echo -e "Successfully installed OpenCV ${VERSION}."
 
-rm -rf "${PKG_OCV}" "opencv-${VERSION}"
+rm -rf "${PKG_FILE}" "${PKG_NAME}-${VERSION}"
 
-if [ "${BUILD_CONTRIB}" = "yes" ]; then
+if [ "${INSTALL_CONTRIB}" = "yes" ]; then
     rm -rf "${PKG_CONTRIB}" "opencv_contrib-${VERSION}"
 fi
+
+# Clean up cache to reduce layer size.
+apt-get clean && \
+    rm -rf /var/lib/apt/lists/*

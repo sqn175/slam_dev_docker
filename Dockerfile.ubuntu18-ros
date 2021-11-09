@@ -5,7 +5,7 @@ FROM ros:melodic
 ENV DEBIAN_FRONTEND=noninteractive
 
 COPY --from=glvnd_runtime /usr/lib/x86_64-linux-gnu /usr/lib/x86_64-linux-gnu
- 
+
 COPY --from=glvnd_runtime \
   /usr/share/glvnd/egl_vendor.d/10_nvidia.json \
   /usr/share/glvnd/egl_vendor.d/10_nvidia.json
@@ -26,6 +26,6 @@ COPY archive /tmp/archive
 
 RUN bash /tmp/installers/config_env.sh
 
-RUN bash /tmp/installers/install_3rdparties_example.sh
+RUN bash /tmp/installers/install_3rdparties_dev.sh
 
 RUN rm -rf /tmp/installers && rm -rf /tmp/rcfiles && rm -rf /tmp/archive

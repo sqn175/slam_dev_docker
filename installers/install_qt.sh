@@ -19,11 +19,9 @@
 # Fail on first error.
 set -e
 
-CURR_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
-. ${CURR_DIR}/installer_base.sh
-
 # Install system-provided qt
-apt_get_update_and_install \
+apt-get -y update && \
+    apt-get -y install --no-install-recommends \
     qt5-default
 exit 0
 
