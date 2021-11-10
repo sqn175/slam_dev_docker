@@ -1,5 +1,12 @@
 # SLAM Development Docker
-Since there isn't an official package manager for C/C++, its always time-consuming and annoying for SLAM developers to setup a develop environment. This repo aim to provide reusable installer scripts for commonly used SLAM third-party libraries and merge them all together into various base Docker containers. Based on this repo, you may customize your environment to quickly run different SLAM algorithms for comparison, maintain a consitent SLAM development environment, or distribute your own SLAM algorithm with the container for rapid spread. Several SLAM develop environments are already shipped in the git branches.
+Since there isn't an official package manager for C/C++, its always time-consuming and annoying for SLAM developers to setup a develop environment. This repo aim to provide reusable installer scripts for commonly used SLAM third-party libraries and merge them all together into various base Docker containers. Based on this repo, you may customize your environment to quickly run different SLAM algorithms for comparison, maintain a consitent SLAM development environment, or distribute your own SLAM algorithm with the container for rapid spread. Several SLAM develop environments are already shipped in the git branches:
+
+| CI Status                                                    | SLAM algorithm                                        | Docker image name        |
+| ------------------------------------------------------------ | ----------------------------------------------------- | ------------------------ |
+| ![Build Status](https://github.com/sqn175/slam_dev_docker/actions/workflows/docker-image.yml/badge.svg) | Common SLAM Dev environment                           | slam-dev-ubuntu18-opengl |
+| ![Build Status](https://github.com/sqn175/slam_dev_docker/actions/workflows/docker-image.yml/badge.svg?branch=PlanarSLAM) | [PlanarSLAM](https://github.com/yanyan-li/PlanarSLAM) | planar-slam              |
+
+
 
 ## Requirement
 
