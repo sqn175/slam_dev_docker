@@ -33,7 +33,7 @@ if [ $1 ]; then
     VERSION="$1"
 fi
 
-WORKHORSE="$1"
+WORKHORSE="$2"
 if [ -z "${WORKHORSE}" ]; then
     WORKHORSE="cpu"
 fi
@@ -94,21 +94,15 @@ tar xzf ${PKG_FILE}
 #  -DCMAKE_SKIP_RPATH=ON \
 
 pushd "${PKG_NAME}-${VERSION}"
-    patch -p1 < ${CURR_DIR}/pcl-sse-fix-${VERSION}.patch
     mkdir build && cd build
     cmake .. \
         "${GPU_OPTIONS}" \
         "${ARCH_OPTIONS}" \
-        -DPCL_ENABLE_SSE=ON \
         -DWITH_DOCS=OFF \
         -DWITH_TUTORIALS=OFF \
         -DBUILD_documentation=OFF \
         -DBUILD_global_tests=OFF \
-        -DOPENNI_INCLUDE_DIR:PATH=/usr/include/ni \
-        -DBoost_NO_SYSTEM_PATHS=TRUE \
-        -DBOOST_ROOT:PATHNAME="${SYSROOT_DIR}" \
         -DBUILD_SHARED_LIBS=ON \
-        -DCMAKE_INSTALL_PREFIX="${SYSROOT_DIR}" \
         -DCMAKE_BUILD_TYPE=Release
 
     make -j$(nproc)

@@ -34,7 +34,7 @@ if [ $1 ]; then
     VERSION="$1"
 fi
 
-WORKHORSE="$1"
+WORKHORSE="$2"
 if [ -z "${WORKHORSE}" ]; then
     WORKHORSE="cpu"
 fi
