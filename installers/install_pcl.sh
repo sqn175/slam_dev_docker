@@ -59,8 +59,6 @@ else
     ARCH_OPTIONS="-DPCL_ENABLE_SSE=OFF"
 fi
 
-# libpcap-dev
-# libopenmpi-dev
 apt-get -y update && \
     apt-get -y install --no-install-recommends \
     libboost-all-dev \
@@ -72,7 +70,9 @@ apt-get -y update && \
     libopenni-dev \
     libjpeg-dev \
     libpng-dev \
-    libpcap-dev
+    libpcap-dev \
+    libopenmpi-dev \
+    libvtk7-dev
 
 # NOTE(storypku)
 # libglfw3-dev depends on libglfw3,
