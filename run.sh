@@ -5,6 +5,9 @@ set -e
 # Default settings
 HOST_SOURCE_DIR="slam/source/dir"
 IMAGE_NAME="slam_dev"
+if [ $1 ]; then
+    IMAGE_NAME="$1"
+fi
 
 XSOCK=/tmp/.X11-unix
 XAUTH=$HOME/.Xauthority

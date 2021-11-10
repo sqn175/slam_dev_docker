@@ -2,7 +2,10 @@
 set -e
 
 DOCKERFILE="Dockerfile.ubuntu18-opengl"
-IMAGE_NAME="slam_dev"
+if [ $1 ]; then
+    DOCKERFILE="$1"
+fi
+IMAGE_NAME="${DOCKERFILE##*.}"
 
 docker build \
     --network=host \

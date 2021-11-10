@@ -19,6 +19,26 @@ Docker installed. [Install Docker Engine](https://docs.docker.com/engine/install
    ./run.sh
    ```
 
+## How to customize
+
+1. Create a third_party lib installer script installers, e.g., `installers/install_3rdparties_ORBSLAM.sh` , (like `install_3rdparties_dev.sh`) to customize your third_party libs.
+
+2. Create a Docker file, e.g., `Dockerfile.ORBSLAM` which will run above script.
+
+3. Build your container:
+
+   ```
+   ./build.sh Dockerfile.ORBSLAM
+   ```
+
+   which will create a container named `ORBSLAM`.
+
+4. Run the container:
+
+   ```
+   ./run.sh ORBSLAM
+   ```
+
 ## Notes
 
 1. You can customize the docker via modifying `installers/install_3rdparties_dev.sh` to install required third-party libraries.
