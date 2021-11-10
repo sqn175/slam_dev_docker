@@ -76,9 +76,10 @@ python3 -m pip install --default-timeout=100 --no-cache-dir numpy
 
 PKG_FILE="${PKG_NAME}-${VERSION}.tar.gz"
 DOWNLOAD_LINK="https://github.com/opencv/opencv/archive/${VERSION}.tar.gz"
+
+pushd ${ARCHIVE_DIR}
 if [[ -e "${ARCHIVE_DIR}/${PKG_FILE}" ]]; then
     echo "Using downloaded source files."
-    mv -f "${ARCHIVE_DIR}/${PKG_FILE}" "${PKG_FILE}"
 else
     wget "${DOWNLOAD_LINK}" -O "${PKG_FILE}"
 fi
@@ -90,7 +91,6 @@ if [ "${INSTALL_CONTRIB}" = "yes" ]; then
     DOWNLOAD_LINK="https://github.com/opencv/opencv_contrib/archive/${VERSION}.tar.gz"
     if [[ -e "${ARCHIVE_DIR}/${PKG_CONTRIB}" ]]; then
         echo "Using downloaded source files."
-        mv -f "${ARCHIVE_DIR}/${PKG_CONTRIB}" "${PKG_CONTRIB}"
     else
         wget "${DOWNLOAD_LINK}" -O "${PKG_CONTRIB}"
     fi
@@ -118,8 +118,10 @@ if [ "${TARGET_ARCH}" = "x86_64" ]; then
 fi
 
 if [ "${INSTALL_CONTRIB}" = "yes" ]; then
-    EXTRA_OPTIONS="${EXTRA_OPTIONS} -DOPENCV_EXTRA_MODULES_PATH=\"../../opencv_contrib-${VERSION}/modules\""
+    echo "==========Current dir:$(pwd)"
+    EXTRA_OPTIONS="${EXTRA_OPTIONS} -DOPENCV_EXTRA_MODULES_PATH=$(pwd)/opencv_contrib-${VERSION}/modules"
 fi
+echo "==============EXTRA_OPTIONS:${EXTRA_OPTIONS}"
 
 # -DBUILD_LIST=core,highgui,improc
 pushd "${PKG_NAME}-${VERSION}"
@@ -153,25 +155,27 @@ pushd "${PKG_NAME}-${VERSION}"
             -DBUILD_opencv_python3=ON   \
             -DBUILD_NEW_PYTHON_SUPPORT=ON \
             -DPYTHON_DEFAULT_EXECUTABLE="$(which python3)" \
-            -DOPENCV_PYTHON3_INSTALL_PATH="/usr/local/lib/python$(py3_version)/dist-packages" \
+            -DOPENCV_PYTHON3_INSTALL_PATH="/usr/local/lib/python$(py3versions -v -i)/dist-packages" \
             -DOPENCV_ENABLE_NONFREE=ON \
             -DCV_TRACE=OFF      \
             ${GPU_OPTIONS}    	\
-            ${EXTRA_OPTIONS}
+            ${EXTRA_OPTIONS}    \
+            -DBUILD_opencv_xfeatures2d=OFF
 
         make -j$(nproc)
-        # make install
+        make install
 popd
-
-ldconfig
-
-echo -e "Successfully installed OpenCV ${VERSION}."
 
 rm -rf "${PKG_FILE}" "${PKG_NAME}-${VERSION}"
 
 if [ "${INSTALL_CONTRIB}" = "yes" ]; then
     rm -rf "${PKG_CONTRIB}" "opencv_contrib-${VERSION}"
 fi
+popd
+
+ldconfig
+
+echo -e "Successfully installed OpenCV ${VERSION}."
 
 # Clean up cache to reduce layer size.
 apt-get clean && \

@@ -61,9 +61,9 @@ fi
 
 # libpcap-dev
 # libopenmpi-dev
-# libboost-all-dev
 apt-get -y update && \
     apt-get -y install --no-install-recommends \
+    libboost-all-dev \
     libflann-dev \
     libglew-dev \
     libglfw3-dev \
@@ -80,9 +80,10 @@ apt-get -y update && \
 
 PKG_FILE="${PKG_NAME}-${VERSION}.tar.gz"
 DOWNLOAD_LINK="https://github.com/PointCloudLibrary/pcl/archive/pcl-${VERSION}.tar.gz"
+
+pushd ${ARCHIVE_DIR}
 if [[ -e "${ARCHIVE_DIR}/${PKG_FILE}" ]]; then
     echo "Using downloaded source files."
-    mv -f "${ARCHIVE_DIR}/${PKG_FILE}" "${PKG_FILE}"
 else
     wget "${DOWNLOAD_LINK}" -O "${PKG_FILE}"
 fi
@@ -114,10 +115,13 @@ pushd "${PKG_NAME}-${VERSION}"
     make install
 popd
 
-ldconfig
-
 #clean up
 rm -rf ${PKG_NAME} ${PKG_NAME}-${VERSION}
+popd
+
+ldconfig
+
+echo -e "Successfully installed ${PKG_NAME} ${VERSION}."
 
 # Clean up cache to reduce layer size.
 apt-get clean && \

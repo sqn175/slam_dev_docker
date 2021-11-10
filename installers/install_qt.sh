@@ -19,13 +19,13 @@
 # Fail on first error.
 set -e
 
-# Install system-provided qt
+# 1) Install system-provided qt
 apt-get -y update && \
     apt-get -y install --no-install-recommends \
     qt5-default
 exit 0
 
-# Install from source download
+# 2) or install from source download
 TARGET_ARCH="$(uname -m)"
 
 apt-get -y update && \
@@ -50,12 +50,16 @@ QT_VERSION_B=5.12.2
 QT_VERSION_Z=$(echo "$QT_VERSION_B" | tr -d '.')
 
 QT_INSTALLER=qt-opensource-linux-x64-${QT_VERSION_B}.run
-CHECKSUM="384c833bfbccf596a00bb02bbad14b53201854c287daf2d99c23a93b8de4062a"
 DOWLOAD_LINK=https://download.qt.io/archive/qt/${QT_VERSION_A}/${QT_VERSION_B}/${QT_INSTALLER}
 
-pip3_install cuteci
+python3 -m pip install --default-timeout=100 --no-cache-dir cuteci
 
-download_if_not_cached $QT_INSTALLER $CHECKSUM $DOWLOAD_LINK
+pushd ${ARCHIVE_DIR}
+if [[ -e "${ARCHIVE_DIR}/${QT_INSTALLER}" ]]; then
+    echo "Using downloaded source files."
+else
+    wget "${DOWNLOAD_LINK}" -O "${QT_INSTALLER}"
+fi
 chmod +x $QT_INSTALLER
 
 MY_DEST_DIR="/usr/local/Qt${QT_VERSION_B}"
@@ -81,8 +85,8 @@ add_to_path \"\${QT5_PATH}/bin\"
 
 echo "${__mytext}" | tee -a "${APOLLO_PROFILE}"
 
-# clean up
-rm -f ${QT_INSTALLER}
+popd
+
 # Keep License files
 rm -rf ${MY_DEST_DIR}/{Docs,Examples,Tools,dist} || true
 rm -rf ${MY_DEST_DIR}/MaintenanceTool* || true
@@ -90,3 +94,5 @@ rm -rf ${MY_DEST_DIR}/{InstallationLog.txt,installer-changelog} || true
 rm -rf ${MY_DEST_DIR}/{components,network}.xml || true
 
 pip3 uninstall -y cuteci
+
+echo -e "Successfully installed Qt ${QT_VERSION_B}."

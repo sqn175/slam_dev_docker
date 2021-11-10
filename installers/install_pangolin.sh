@@ -20,9 +20,10 @@ apt-get -y update && \
 
 PKG_FILE="${PKG_NAME}-${VERSION}.tar.gz"
 DOWNLOAD_LINK="https://github.com/stevenlovegrove/Pangolin/archive/v${VERSION}.tar.gz"
+
+pushd ${ARCHIVE_DIR}
 if [[ -e "${ARCHIVE_DIR}/${PKG_FILE}" ]]; then
     echo "Using downloaded source files."
-    mv -f "${ARCHIVE_DIR}/${PKG_FILE}" "${PKG_FILE}"
 else
     wget "${DOWNLOAD_LINK}" -O "${PKG_FILE}"
 fi
@@ -35,12 +36,13 @@ pushd "${PKG_NAME}-${VERSION}"
     make install
 popd
 
+# Clean up files
+rm -rf ${PKG_FILE} ${PKG_NAME}-${VERSION}
+popd
+
 ldconfig
 
 echo -e "Successfully installed ${PKG_NAME} ${VERSION}."
-
-# Clean up files
-rm -rf ${PKG_FILE} ${PKG_NAME}-${VERSION}
 
 # Clean up cache to reduce layer size.
 apt-get clean && \
