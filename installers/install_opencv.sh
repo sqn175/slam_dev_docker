@@ -118,10 +118,8 @@ if [ "${TARGET_ARCH}" = "x86_64" ]; then
 fi
 
 if [ "${INSTALL_CONTRIB}" = "yes" ]; then
-    echo "==========Current dir:$(pwd)"
     EXTRA_OPTIONS="${EXTRA_OPTIONS} -DOPENCV_EXTRA_MODULES_PATH=$(pwd)/opencv_contrib-${VERSION}/modules"
 fi
-echo "==============EXTRA_OPTIONS:${EXTRA_OPTIONS}"
 
 # -DBUILD_LIST=core,highgui,improc
 pushd "${PKG_NAME}-${VERSION}"
