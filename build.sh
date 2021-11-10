@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-DOCKERFILE="Dockerfile.ubuntu18-opengl"
+DOCKERFILE="Dockerfile.slam-dev-ubuntu18-opengl"
 if [ $1 ]; then
     DOCKERFILE="$1"
 fi
