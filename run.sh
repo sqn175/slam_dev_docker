@@ -4,7 +4,7 @@ set -e
 
 # Default settings
 HOST_SOURCE_DIR="slam/source/dir"
-IMAGE_NAME="slam_dev"
+IMAGE_NAME="slam-dev-ubuntu18-opengl"
 if [ $1 ]; then
     IMAGE_NAME="$1"
 fi
