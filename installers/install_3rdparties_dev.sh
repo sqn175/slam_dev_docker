@@ -16,8 +16,9 @@ CURR_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
 bash ${CURR_DIR}/install_eigen3.sh      3.1.0
 bash ${CURR_DIR}/install_opencv.sh      3.4.1
 
-bash ${CURR_DIR}/install_dbow2.sh
 bash ${CURR_DIR}/install_dlib.sh
+# DBoW2 depends on Dlib
+bash ${CURR_DIR}/install_dbow2.sh
 bash ${CURR_DIR}/install_g2o.sh
 bash ${CURR_DIR}/install_opengv.sh
 bash ${CURR_DIR}/install_pangolin.sh
