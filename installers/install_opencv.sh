@@ -70,7 +70,8 @@ apt-get -y update && \
     libxvidcore-dev \
     libx264-dev \
     libopenni-dev \
-    libwebp-dev
+    libwebp-dev \
+    libgtk2.0-dev
 
 python3 -m pip install --default-timeout=100 --no-cache-dir numpy
 
@@ -137,18 +138,6 @@ pushd "${PKG_NAME}-${VERSION}"
             -DBUILD_PROTOBUF=OFF \
             -DPROTOBUF_UPDATE_FILES=ON \
             -DINSTALL_C_EXAMPLES=OFF   \
-            -DWITH_GTK=OFF  \
-            -DWITH_IPP=OFF  \
-            -DWITH_ITT=OFF  \
-            -DWITH_TBB=OFF  \
-            -DWITH_EIGEN=ON \
-            -DWITH_FFMPEG=ON   \
-            -DWITH_LIBV4L=ON   \
-            -DWITH_OPENMP=ON   \
-            -DWITH_OPENNI=ON   \
-            -DWITH_OPENCL=ON   \
-            -DWITH_WEBP=ON     \
-            -DOpenGL_GL_PREFERENCE=GLVND \
             -DBUILD_opencv_python2=OFF  \
             -DBUILD_opencv_python3=ON   \
             -DBUILD_NEW_PYTHON_SUPPORT=ON \
