@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# This lib requires pre-installed Eigen3
+# This lib requires pre-installed Eigen3.3.X
 
 set -e
 
