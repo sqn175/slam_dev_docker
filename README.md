@@ -4,7 +4,7 @@ Since there isn't an official package manager for C/C++, its always time-consumi
 | CI Status                                                    | SLAM algorithm                                        | Docker image name        |
 | ------------------------------------------------------------ | ----------------------------------------------------- | ------------------------ |
 | ![Build Status](https://github.com/sqn175/slam_dev_docker/actions/workflows/docker-image.yml/badge.svg) | Common SLAM Dev environment                           | slam-dev-ubuntu18-opengl |
-| ![Build Status](https://github.com/sqn175/slam_dev_docker/actions/workflows/docker-image.yml/badge.svg?branch=PlanarSLAM) | [PlanarSLAM](https://github.com/yanyan-li/PlanarSLAM) | planar-slam              |
+| ![Build Status](https://github.com/sqn175/slam_dev_docker/actions/workflows/docker-image-planar-slam.yml/badge.svg) | [PlanarSLAM](https://github.com/yanyan-li/PlanarSLAM) | planar-slam              |
 
 
 
@@ -48,9 +48,7 @@ Docker installed. [Install Docker Engine](https://docs.docker.com/engine/install
 
 ## Notes
 
-1. You can customize the docker via modifying `installers/install_3rdparties_dev.sh` to install required third-party libraries.
-
-2. Some source mirrors such as apt and python mirrors are modified to China mirrors to improve download speed for China mainland users.
+2. Some source mirrors such as apt and python mirrors are modified to China mirrors **to improve download speed for China mainland users**.
 
 3. You can manually pre-download third-party lib source code tarball files into archive dir for offline Docker building.
 
