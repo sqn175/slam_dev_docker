@@ -71,7 +71,8 @@ apt-get -y update && \
     libx264-dev \
     libopenni-dev \
     libwebp-dev \
-    libgtk2.0-dev
+    libgtk2.0-dev \
+    libvtk7-dev
 
 python3 -m pip install --default-timeout=100 --no-cache-dir numpy
 

@@ -51,14 +51,6 @@ fi
 
 echo "GPU Options for PCL:\"${GPU_OPTIONS}\""
 
-TARGET_ARCH="$(uname -m)"
-ARCH_OPTIONS=""
-if [ "${TARGET_ARCH}" = "x86_64" ]; then
-    ARCH_OPTIONS="-DPCL_ENABLE_SSE=ON"
-else
-    ARCH_OPTIONS="-DPCL_ENABLE_SSE=OFF"
-fi
-
 apt-get -y update && \
     apt-get -y install --no-install-recommends \
     libboost-all-dev \
@@ -97,12 +89,13 @@ pushd "${PKG_NAME}-${VERSION}"
     mkdir build && cd build
     cmake .. \
         "${GPU_OPTIONS}" \
-        "${ARCH_OPTIONS}" \
         -DWITH_DOCS=OFF \
         -DWITH_TUTORIALS=OFF \
         -DBUILD_documentation=OFF \
         -DBUILD_global_tests=OFF \
         -DBUILD_SHARED_LIBS=ON \
+        -DBUILD_GPU=ON \
+        -DBUILD_apps=ON \
         -DCMAKE_BUILD_TYPE=Release
 
     make -j$(nproc)
