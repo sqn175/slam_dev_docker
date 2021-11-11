@@ -48,11 +48,13 @@ Docker installed. [Install Docker Engine](https://docs.docker.com/engine/install
 
 ## Notes
 
-2. Some source mirrors such as apt and python mirrors are modified to China mirrors **to improve download speed for China mainland users**.
+1. The SLAM source code directory is mounted into the Docker container. Set `HOST_SOURCE_DIR="slam/source/dir"`  in `run.sh` , this will mount your code directory `slam/source/dir` into `/slam_dev_src` in Docker.
+
+2. Some source mirrors such as apt and python mirrors are modified to China mirrors to improve download speed for China mainland users.
 
 3. You can manually pre-download third-party lib source code tarball files into archive dir for offline Docker building.
 
-4. You can develop your SLAM algorithm using VS Code inside the containers, just modify the the attributes of `./devcontainer/devcontainer.json`  in VSCode:
+4. **Recommend** to develop your SLAM algorithm using **VS Code** inside the containers, just modify the the attributes of `./devcontainer/devcontainer.json`  in VSCode:
 
    ```json
    "build": {
