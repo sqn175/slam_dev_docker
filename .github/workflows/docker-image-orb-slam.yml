@@ -3,8 +3,10 @@ name: Docker Image CI
 on:
   push:
     branches: [ ORB_SLAM ]
+    paths-ignore: [ '**.md' ]
   pull_request:
     branches: [ ORB_SLAM ]
+    paths-ignore: [ '**.md' ]
 
 jobs:
 
