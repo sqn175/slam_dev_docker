@@ -66,6 +66,7 @@ apt-get -y update && \
     libtiff-dev \
     libv4l-dev \
     libopenblas-dev \
+    liblapacke-dev \
     libatlas-base-dev \
     libxvidcore-dev \
     libx264-dev \
