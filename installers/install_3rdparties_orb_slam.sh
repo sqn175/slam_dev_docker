@@ -14,7 +14,7 @@ CURR_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
 # Eigen3 and OpenCV should be installed first as they may be 
 # the dependencies of other libs
 bash ${CURR_DIR}/install_eigen3.sh      3.3.4
-bash ${CURR_DIR}/install_opencv.sh      3.2.0
+bash ${CURR_DIR}/install_opencv.sh      3.3.0
 bash ${CURR_DIR}/install_pangolin.sh
 
 # Clean up cache to reduce layer size.
