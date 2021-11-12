@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 
-# This lib requires pre-installed Eigen3.3.X
+# Sophus currently requires pre-installed Eigen3.3.X
+# Only master branch can successfully built on Linux
 
 set -e
 
-VERSION="1.0.0"
+VERSION="master"
 if [ $1 ]; then
     VERSION="$1"
 fi
@@ -14,6 +15,9 @@ echo -e "\033[32mInstalling ${PKG_NAME} ...\033[0m"
 
 PKG_FILE="${PKG_NAME}-${VERSION}.tar.gz"
 DOWNLOAD_LINK="https://github.com/strasdat/Sophus/archive/v${VERSION}.tar.gz"
+if [ $DOWNLOAD_LINK="master" ]; then
+    DOWNLOAD_LINK="https://github.com/strasdat/Sophus/archive/master.tar.gz"
+fi
 
 pushd ${ARCHIVE_DIR}
 if [[ -e "${ARCHIVE_DIR}/${PKG_FILE}" ]]; then
