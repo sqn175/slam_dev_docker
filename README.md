@@ -6,7 +6,7 @@ Since there isn't an official package manager for C/C++, its always time-consumi
 | ![Build Status](https://github.com/sqn175/slam_dev_docker/actions/workflows/docker-image.yml/badge.svg) | master     | Common SLAM Dev environment                                  | slam-dev-ubuntu18-opengl |
 | ![Build Status](https://github.com/sqn175/slam_dev_docker/actions/workflows/docker-image-orb-slam.yml/badge.svg) | ORB_SLAM   | [ORB_SLAM2](https://github.com/raulmur/ORB_SLAM2) [ORB_SLAM3](https://github.com/UZ-SLAMLab/ORB_SLAM3) | orb-slam                 |
 | ![Build Status](https://github.com/sqn175/slam_dev_docker/actions/workflows/docker-image-planar-slam.yml/badge.svg) | PlanarSLAM | [PlanarSLAM](https://github.com/yanyan-li/PlanarSLAM)        | planar-slam              |
-| ![Build Status](https://github.com/sqn175/slam_dev_docker/actions/workflows/docker-image-bad-slam.yml/badge.svg) | BAD SLAM   | [BAD SLAM](https://github.com/ETH3D/badslam)                 | bad-slam                 |
+| ![Build Status](https://github.com/sqn175/slam_dev_docker/actions/workflows/docker-image-bad-slam.yml/badge.svg) | BAD-SLAM   | [BAD SLAM](https://github.com/ETH3D/badslam)                 | bad-slam                 |
 
 
 
