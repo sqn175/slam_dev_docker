@@ -1,0 +1,13 @@
+FROM nvidia/cudagl:10.1-devel-ubuntu18.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+COPY installers /tmp/installers
+COPY rcfiles /tmp/rcfiles
+COPY archive /tmp/archive
+
+RUN bash /tmp/installers/config_env.sh
+
+RUN bash /tmp/installers/install_3rdparties_bad_slam.sh
+
+RUN rm -rf /tmp/installers && rm -rf /tmp/rcfiles && rm -rf /tmp/archive
