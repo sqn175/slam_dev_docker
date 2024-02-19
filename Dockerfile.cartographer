@@ -1,6 +1,6 @@
-FROM nvidia/opengl:1.0-glvnd-runtime-ubuntu18.04 as glvnd_runtime
+FROM nvidia/opengl:1.0-glvnd-runtime-ubuntu20.04 as glvnd_runtime
 
-FROM ros:melodic
+FROM ros:noetic
 
 ENV DEBIAN_FRONTEND=noninteractive
 
