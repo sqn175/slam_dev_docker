@@ -137,7 +137,7 @@ function change_mirror_and_install_for_cn_user() {
   # Depending on ROS version and respectively the one of rospkg we need to stick to python 2.x or 3.x. 
   # ROS Kinetic and ROS Melodic — Python2. ROS Noetic — Python3.
   # For detailed information, see https://www.ros.org/reps/rep-0151.html#context 
-  if [ [ -z "${ROS_PYTHON_VERSION}" ] && "${ROS_PYTHON_VERSION}" == "2"]; then
+  if [ ! -z "${ROS_PYTHON_VERSION}" ] && [ "${ROS_PYTHON_VERSION}" == "2" ]; then
     update-alternatives --install /usr/bin/python python /usr/bin/python2 27
     update-alternatives --set python /usr/bin/python2
   fi

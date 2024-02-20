@@ -24,14 +24,32 @@ set -e
 PKG_NAME="opencv"
 echo -e "\033[32mInstalling ${PKG_NAME} ...\033[0m"
 
-# if ldconfig -p | grep -q libopencv_core ; then
-#     info "OpenCV was already installed. Skip."
-#     exit 0
-# fi
+INSTALL_CONTRIB="no"
 
 VERSION="3.4.1"
 if [ $1 ]; then
     VERSION="$1"
+else
+    if ldconfig -p | grep -q libopencv_core ; then
+        info "OpenCV was already installed. Skip."
+        exit 0
+    fi
+
+    # Install OpenCV via apt
+    apt-get -y update && \
+            apt-get -y install --no-install-recommends \
+        libopencv-core-dev \
+        libopencv-imgproc-dev \
+        libopencv-imgcodecs-dev \
+        libopencv-highgui-dev \
+        libopencv-dev
+
+    if [ "${INSTALL_CONTRIB}" = "yes" ]; then
+        apt-get -y update && \
+            apt-get -y install --no-install-recommends \
+            libopencv-contrib-dev
+    fi
+    exit 0
 fi
 
 WORKHORSE="$2"
@@ -39,24 +57,7 @@ if [ -z "${WORKHORSE}" ]; then
     WORKHORSE="cpu"
 fi
 
-INSTALL_CONTRIB="yes"
-
-# 1) Install OpenCV via apt
-# apt-get -y update && \
-#         apt-get -y install --no-install-recommends \
-#     libopencv-core-dev \
-#     libopencv-imgproc-dev \
-#     libopencv-imgcodecs-dev \
-#     libopencv-highgui-dev \
-#     libopencv-dev
-
-# if [ "${INSTALL_CONTRIB}" = "yes" ]; then
-#     apt-get -y update && \
-#         apt-get -y install --no-install-recommends \
-#         libopencv-contrib-dev
-# fi
-# exit 0
-# 2) Or Build OpenCV from source
+# Build OpenCV from source
 # RTFM: https://src.fedoraproject.org/rpms/opencv/blob/master/f/opencv.spec
 
 apt-get -y update && \
