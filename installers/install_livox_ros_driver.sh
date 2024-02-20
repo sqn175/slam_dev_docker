@@ -10,7 +10,7 @@ fi
 PKG_NAME="livox_ros_driver"
 echo -e "\033[32mInstalling ${PKG_NAME} ...\033[0m"
 
-if [ ! -z "${ROS_DISTRO}" ]; then
+if [ -z "${ROS_DISTRO}" ]; then
     echo "${PKG_NAME} installation failed. ROS not found."
     exit 1
 fi
@@ -18,8 +18,6 @@ fi
 PKG_FILE="${PKG_NAME}-${VERSION}.tar.gz"
 DOWNLOAD_LINK="https://github.com/Livox-SDK/livox_ros_driver/archive/v${VERSION}.tar.gz"
 
-ARCHIVE_DIR="/tmp"
-source "/opt/ros/melodic/setup.bash"
 mkdir -p ${ARCHIVE_DIR}/tmp_ros_ws/src
 pushd ${ARCHIVE_DIR}/tmp_ros_ws/src
     if [[ -e "${ARCHIVE_DIR}/${PKG_FILE}" ]]; then
@@ -29,6 +27,8 @@ pushd ${ARCHIVE_DIR}/tmp_ros_ws/src
     fi
     tar xzf ${PKG_FILE}
 popd
+
+. /opt/ros/${ROS_DISTRO}/setup.sh
 catkin_make install
 
 pushd src/
