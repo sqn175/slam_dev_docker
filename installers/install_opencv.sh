@@ -31,7 +31,7 @@ if [ $1 ]; then
     VERSION="$1"
 else
     if ldconfig -p | grep -q libopencv_core ; then
-        info "OpenCV was already installed. Skip."
+        echo "OpenCV was already installed. Skip."
         exit 0
     fi
 
