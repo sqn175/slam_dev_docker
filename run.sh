@@ -26,6 +26,7 @@ docker run \
     $VOLUMES \
     --env DISPLAY=${DISPLAY} \
     --env XAUTHORITY=${XAUTH} \
+    --env="QT_X11_NO_MITSHM=1" \
     --net host \
     --workdir /home/slam_dev \
     --add-host raw.githubusercontent.com:151.101.84.133 \

@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-# This lib requires pre-installed OpenCV
-
 set -e
 
 VERSION="3.3.7"

@@ -14,23 +14,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ###############################################################################
-# Fail on first error.
-
-# This lib requires pre-installed Eigen3
 
 set -e
 
 PKG_NAME="pcl-pcl"
 echo -e "\033[32mInstalling ${PKG_NAME} ...\033[0m"
 
-if ldconfig -p | grep -q libpcl_common ; then
-    info "PCL was already installed. Skip."
-    exit 0
-fi
-
 VERSION="1.10.1"
 if [ $1 ]; then
     VERSION="$1"
+else 
+    # Install PCL via apt
+    apt-get -y update && \
+        apt-get -y install --no-install-recommends \
+        libpcl-dev
+    exit 0
 fi
 
 WORKHORSE="$2"
@@ -38,12 +36,7 @@ if [ -z "${WORKHORSE}" ]; then
     WORKHORSE="cpu"
 fi
 
-# 1) Install PCL via apt
-# apt-get -y update && \
-#     apt-get -y install --no-install-recommends \
-#     libpcl-dev
-# exit 0
-# 2) Or Build PCL from source
+# Build PCL from source
 GPU_OPTIONS="-DCUDA_ARCH_BIN=\"${SUPPORTED_NVIDIA_SMS}\""
 if [ "${WORKHORSE}" = "cpu" ]; then
     GPU_OPTIONS="-DWITH_CUDA=OFF"

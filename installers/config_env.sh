@@ -90,9 +90,7 @@ function change_mirror_and_install_for_cn_user() {
 
   echo "Changing apt sources and ROS sources ..."
   # Change apt source mirror
-  sed -i "s@http://archive.ubuntu.com/ubuntu/@http://mirrors.163.com/ubuntu/@g" /etc/apt/sources.list
-  # Set ROS mirror
-  [ ! -z "${ROS_DISTRO}" ] && echo "deb https://mirrors.cloud.tencent.com/ros/ubuntu/ $(lsb_release -c --short) main" >/etc/apt/sources.list.d/ros-latest.list
+  sed -i "s@http://archive.ubuntu.com/ubuntu/@https://mirrors.tuna.tsinghua.edu.cn/ubuntu/@g" /etc/apt/sources.list
 
   # Remove apt file for cuda since the connection to "developer.download.nvidia.com" is not always stable
   [ -e /etc/apt/sources.list.d/cuda.list ] && rm /etc/apt/sources.list.d/cuda.list
@@ -129,7 +127,23 @@ function change_mirror_and_install_for_cn_user() {
       zip \
       xz-utils \
       tmux \
-      htop
+      htop \
+      gnupg2
+
+  # Set ROS1/2 mirror and source ROS env
+  if [ ! -z "${ROS_DISTRO}" ]; then
+    echo "source /opt/ros/${ROS_DISTRO}/setup.bash" >> /home/${DOCKER_USER}/.bashrc
+
+    if [ "${ROS_VERSION}" = "1" ]; then
+      echo "deb https://mirrors.tuna.tsinghua.edu.cn/ros/ubuntu/ $(lsb_release -c --short) main" >/etc/apt/sources.list.d/ros-latest.list
+      apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
+      apt-get -y update
+    elif [ "${ROS_VERSION}" = "2" ]; then
+      curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key  -o /usr/share/keyrings/ros-archive-keyring.gpg
+      echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] https://mirrors.tuna.tsinghua.edu.cn/ros2/ubuntu jammy main" | tee /etc/apt/sources.list.d/ros2.list > /dev/null
+      apt-get -y update
+    fi
+  fi
 
   # Set python3 as default
   update-alternatives --install /usr/bin/python python /usr/bin/python3 36
@@ -144,8 +158,8 @@ function change_mirror_and_install_for_cn_user() {
   fi
 
   # Set pypi mirror
-  python3 -m pip install --default-timeout=100 --no-cache-dir -i https://mirrors.cloud.tencent.com/pypi/simple pip -U
-  python3 -m pip config set global.index-url https://mirrors.cloud.tencent.com/pypi/simple
+  python -m pip install --default-timeout=100 --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple pip -U
+  python -m pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
 
   # Clean up cache to reduce layer size.
   apt-get clean &&
