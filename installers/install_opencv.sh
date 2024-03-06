@@ -74,7 +74,8 @@ apt-get -y update && \
     libopenni-dev \
     libwebp-dev \
     libgtk2.0-dev \
-    libvtk7-dev
+    libvtk6-dev
+# TODO: Test the libvtk version. PCL uses libvtk7-dev
 
 python3 -m pip install --default-timeout=100 --no-cache-dir numpy
 
