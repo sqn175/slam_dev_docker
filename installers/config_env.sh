@@ -158,8 +158,8 @@ function change_mirror_and_install_for_cn_user() {
   fi
 
   # Set pypi mirror
-  python3 -m pip install --default-timeout=100 --no-cache-dir -i https://mirrors.cloud.tencent.com/pypi/simple pip -U
-  python3 -m pip config set global.index-url https://mirrors.cloud.tencent.com/pypi/simple
+  python -m pip install --default-timeout=100 --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple pip -U
+  python -m pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
 
   # Clean up cache to reduce layer size.
   apt-get clean &&
